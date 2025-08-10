@@ -11,10 +11,12 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends git \
     && rm -rf /var/lib/apt/lists/*
 
-COPY server/requirements.txt .
-RUN pip install --upgrade pip && pip install -r requirements.txt
+# copy requirements from *this* folder (server/)
+COPY requirements.txt /app/requirements.txt
+RUN pip install --upgrade pip && pip install -r /app/requirements.txt
 
-COPY server/ /app/
+# copy the rest of the app
+COPY . /app/
 
 EXPOSE 8080
 CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8080}"]
