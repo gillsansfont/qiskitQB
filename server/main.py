@@ -4,6 +4,20 @@ from fastapi.middleware.cors import CORSMiddleware
 from io import BytesIO
 from PIL import Image
 import numpy as np
+import os
+from qiskit_ibm_runtime import QiskitRuntimeService
+
+SERVICE = None
+BACKEND_NAME = os.getenv("IBM_BACKEND", "")  # optional, e.g., "ibm_oslo"
+
+try:
+    token = os.getenv("IBM_QUANTUM_TOKEN")
+    instance = os.getenv("IBM_QUANTUM_INSTANCE")  # e.g. "ibm-q/open/main" (optional)
+    if token:
+        SERVICE = QiskitRuntimeService(channel="ibm_quantum", token=token, instance=instance)
+except Exception:
+    SERVICE = None
+
 
 # Quantum Blur (Qiskit-based)
 from quantumblur import quantumblur as qb
@@ -108,4 +122,15 @@ async def blur_raw(
     x = (arr.reshape((h, w)).astype(np.float32)) / 255.0
     y = qb.blur(x, rotation=rotation, shots=shots)
     out = np.clip(y * 255.0, 0, 255).astype(np.uint8).tobytes()
-    return Response(content=out, media_type="application/octet-stream")
+
+    
+    @app.get("/ibm/status")
+def ibm_status():
+    if not SERVICE:
+        return {"ok": False, "reason": "SERVICE not initialized"}
+    try:
+        names = [b.name for b in SERVICE.backends()]
+        return {"ok": True, "backends": names[:10]}
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
+return Response(content=out, media_type="application/octet-stream")
