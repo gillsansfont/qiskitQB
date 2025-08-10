@@ -9,22 +9,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: superfly/flyctl-actions/setup-flyctl@master
 
-      - name: Setup flyctl
-        uses: superfly/flyctl-actions/setup-flyctl@master
-
-      # 👇 sanity check: show we DO have server/Dockerfile & server/fly.toml
-      - name: Show repo structure
+      - name: Show server dir
+        working-directory: server
         run: |
           pwd
           ls -la
-          echo "---- server dir ----"
-          ls -la server || true
-          echo "---- fly.toml head ----"
-          sed -n '1,60p' server/fly.toml || true
 
-      # 👇 DEPLOY from server/ explicitly (so Fly sees Dockerfile + fly.toml)
-      - name: Deploy server/ to Fly
-        run: flyctl deploy --remote-only --config server/fly.toml --dockerfile server/Dockerfile
+      - name: Deploy (from server/)
+        working-directory: server      # ⬅️ build context = /server
+        run: flyctl deploy --remote-only
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
