@@ -2,15 +2,29 @@ name: Fly Deploy
 on:
   push:
     branches: [ main ]
+  workflow_dispatch: {}
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    concurrency: deploy-group
     steps:
       - uses: actions/checkout@v4
-      - uses: superfly/flyctl-actions/setup-flyctl@master
-      - name: Deploy to Fly (server/)
-        working-directory: server   # 👈 run in /server so fly.toml & Dockerfile are visible
-        run: flyctl deploy --remote-only
+
+      - name: Setup flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      # 👇 sanity check: show we DO have server/Dockerfile & server/fly.toml
+      - name: Show repo structure
+        run: |
+          pwd
+          ls -la
+          echo "---- server dir ----"
+          ls -la server || true
+          echo "---- fly.toml head ----"
+          sed -n '1,60p' server/fly.toml || true
+
+      # 👇 DEPLOY from server/ explicitly (so Fly sees Dockerfile + fly.toml)
+      - name: Deploy server/ to Fly
+        run: flyctl deploy --remote-only --config server/fly.toml --dockerfile server/Dockerfile
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
