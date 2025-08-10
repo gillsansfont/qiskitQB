@@ -1,0 +1,6 @@
+fastapi
+uvicorn[standard]
+pillow
+numpy
+qiskit
+git+https://github.com/qiskit-community/QuantumBlur.git
