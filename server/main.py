@@ -30,7 +30,7 @@ async def blur(req: Request):
     data = await req.body()
     img = Image.open(BytesIO(data)).convert("L")
     x = np.asarray(img, dtype=np.float32) / 255.0
-    y = qb.blur(x, rotation=0.35, shots=256)
+    y = qb.blur(x, rotation=1.2, shots=64)
     return Response(content=to_png_bytes(y), media_type="image/png")
 
 @app.get("/")
