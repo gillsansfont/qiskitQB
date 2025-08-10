@@ -1,0 +1,19 @@
+app = "quantumblur-streamer"   # <— change if you prefer
+primary_region = "fra"         # Frankfurt (near Basel); pick your favorite region
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]
+  [http_service.concurrency]
+    type = "connections"
+    soft_limit = 25
+    hard_limit = 50
+
+# Give qiskit/numpy some headroom
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"
