@@ -32,3 +32,7 @@ async def blur(req: Request):
     x = np.asarray(img, dtype=np.float32) / 255.0
     y = qb.blur(x, rotation=0.35, shots=256)
     return Response(content=to_png_bytes(y), media_type="image/png")
+
+@app.get("/")
+def health():
+    return {"ok": True}
