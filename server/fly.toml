@@ -1,4 +1,4 @@
-app = "qiskitqb"   # CHANGE if taken
+app = "qiskitqb-ici5dq"   # CHANGE if taken
 primary_region = "fra"         # close to Basel
 
 [http_service]
