@@ -1,4 +1,4 @@
-app = "qiskitqb"        # make sure this matches your Fly app name exactly
+app = "qiskitqb-ici5dq"   # <-- paste the exact slug here
 primary_region = "fra"
 
 [http_service]
