@@ -2,7 +2,6 @@ name: Fly Deploy
 on:
   push:
     branches: [ main ]
-    # optional: only run when server/ or this workflow changes
     paths:
       - 'server/**'
       - '.github/workflows/fly.yml'
@@ -15,18 +14,16 @@ jobs:
       - uses: actions/checkout@v4
       - uses: superfly/flyctl-actions/setup-flyctl@master
 
-      # Sanity check: prove we're in /server and files exist
+      # Sanity check
       - name: Show server dir
         working-directory: server
         run: |
           pwd
           ls -la
-          echo "---- fly.toml ----"
-          sed -n '1,80p' fly.toml
-          echo "---- Dockerfile ----"
-          sed -n '1,80p' Dockerfile
+          echo "---- fly.toml ----"; sed -n '1,60p' fly.toml || true
+          echo "---- Dockerfile ----"; sed -n '1,60p' Dockerfile || true
 
-      # Deploy from server/ (build context = server/)
+      # Deploy FROM server/ so Dockerfile + fly.toml are visible
       - name: Deploy (server/)
         working-directory: server
         run: flyctl deploy --remote-only
