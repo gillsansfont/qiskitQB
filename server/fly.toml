@@ -3,11 +3,11 @@ primary_region = "fra"         # close to Basel
 
 [http_service]
   internal_port = 8080
+  auto_stop_machines = true    # scale to 0 when idle
+  auto_start_machines = true   # wake on first request
+  min_machines_running = 0     # keep $0 idle cost
   force_https = true
-  auto_stop_machines = true
-  auto_start_machines = true
-  min_machines_running = 0
-  processes = ["app"]
+
   [http_service.concurrency]
     type = "connections"
     soft_limit = 25
