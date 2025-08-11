@@ -1,4 +1,4 @@
-app = "qiskitqb-ici5dq"   # <-- paste the exact slug here
+app = "qiskitqb-ici5dq"
 primary_region = "fra"
 
 [http_service]
