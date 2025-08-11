@@ -23,9 +23,9 @@ jobs:
           echo "---- fly.toml ----"; sed -n '1,60p' fly.toml || true
           echo "---- Dockerfile ----"; sed -n '1,60p' Dockerfile || true
 
-      # Deploy FROM server/ so Dockerfile + fly.toml are visible
-      - name: Deploy (server/)
-        working-directory: server
-        run: flyctl deploy --remote-only
-        env:
-          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+   - name: Deploy (server/)
+  working-directory: server
+  run: flyctl deploy --remote-only --app qiskitqb-ici5dq
+  env:
+    FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
